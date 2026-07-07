@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mariachi MexiColombia</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Agenda de Serenatas – Mariachi MexiColombia" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Mariachi MexiColombia" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --gold:        #c9a84c;
+      --gold-light:  #f0d878;
+      --gold-dark:   #9a7a2e;
+      --black:       #0a0a0a;
+      --black-mid:   #141414;
+      --black-card:  #1c1a14;
+      --black-panel: #111109;
+      --white:       #f0ead0;      /* dorado muy claro casi blanco */
+      --white-dim:   #d4c48a;      /* dorado claro para textos secundarios */
+      --red-alert:   #c0392b;
+      --green-ok:    #27ae60;
+
+      --font-display: 'Cinzel Decorative', serif;
+      --font-head:    'Cinzel', serif;
+      --font-body:    'Lato', sans-serif;
+
+      --radius:  6px;
+      --shadow:  0 4px 24px rgba(0,0,0,.7);
+      --glow:    0 0 18px rgba(201,168,76,.25);
+    }
+
+    /* MODO CLARO */
+    body.light-mode {
+      --black:       #ffffff;
+      --black-mid:   #f0f0f0;
+      --black-card:  #ffffff;
+      --black-panel: #f5f5f5;
+      --white:       #111111;
+      --white-dim:   #333333;
+      --gold:        #000000;
+      --gold-light:  #000000;
+      --gold-dark:   #333333;
+      --black:       #ffffff;
+      --black-mid:   #f5f5f5;
+      --black-card:  #ffffff;
+      --black-panel: #f5f5f5;
+      --white:       #000000;
+      --white-dim:   #000000;
+      --shadow:      0 4px 16px rgba(0,0,0,.08);
+      --glow:        none;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    p, span, div, label, small { font-weight: 500; }
+    h1, h2, h3, b, strong { font-weight: 700; }
+    html { font-size: 16px; }
+    html, body { height: 100%; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      transition: background .3s, color .3s;
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 500;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    /* ═══ MODO CLARO — fondo blanco puro, todo negro ═══ */
+    body.light-mode,
+    body.light-mode #app,
+    body.light-mode main,
+    body.light-mode .screen { background: #ffffff !important; color: #000000 !important; }
+    body.light-mode * { color: #000000 !important; }
+    body.light-mode header { background: #ffffff !important; border-color: #cccccc !important; box-shadow: 0 2px 8px rgba(0,0,0,.1) !important; }
+    body.light-mode input, body.light-mode select, body.light-mode textarea { background: #f5f5f5 !important; color: #000000 !important; border-color: #999 !important; }
+    body.light-mode input::placeholder { color: #999 !important; }
+    body.light-mode .modal { background: #ffffff !important; border-color: #cccccc !important; }
+    body.light-mode .serenata-card { background: #f9f9f9 !important; border-color: #cccccc !important; border-left-color: #333 !important; }
+    body.light-mode .config-section { background: #f9f9f9 !important; border-color: #cccccc !important; }
+    body.light-mode .admin-tabs { background: #f0f0f0 !important; border-color: #cccccc !important; }
+    body.light-mode .tab-btn { color: #000000 !important; background: transparent !important; }
+    body.light-mode .tab-btn.active { background: #222222 !important; color: #ffffff !important; }
+    body.light-mode .tab-btn.active * { color: #ffffff !important; }
+    body.light-mode .btn-group { background: #f9f9f9 !important; border-color: #cccccc !important; }
+    body.light-mode .btn-add { background: #222222 !important; color: #ffffff !important; }
+    body.light-mode .btn-add * { color: #ffffff !important; }
+    body.light-mode .btn-primary { background: #222222 !important; color: #ffffff !important; }
+    body.light-mode .btn-primary * { color: #ffffff !important; }
+    body.light-mode .btn-secondary { border-color: #333 !important; color: #000 !important; }
+    body.light-mode .btn-admin { border-color: #333 !important; color: #000 !important; }
+    body.light-mode .overlay { background: rgba(0,0,0,.5) !important; }
+
+    body.light-mode .empty-state { color: #666 !important; }
+    body.light-mode .empty-state * { color: #666 !important; }
+    body.light-mode #screen-home { background: #ffffff !important; }
+    body.light-mode .home-divider span { background: #cccccc !important; }
+    body.light-mode .serenata-card::before { background: #333333 !important; }
+    button { cursor: pointer; font-family: inherit; border: none; outline: none; }
+    input, textarea, select {
+      font-family: var(--font-body);
+      outline: none;
+    }
+    a { color: var(--gold); }
+
+    /* Formulario cliente — siempre blanco/negro */
+    #screen-cliente .field label { color: #000000 !important; font-weight: 700 !important; }
+    #screen-cliente input { background: #f5f5f5 !important; color: #000000 !important; border-color: #666 !important; font-weight: 700 !important; font-size: 1.1rem !important; padding: 12px 14px !important; }
+    #screen-cliente input::placeholder { color: #888 !important; opacity: 0.8 !important; font-weight: 500 !important; }
+    #screen-cliente .field label { color: #000000 !important; font-weight: 700 !important; font-size: 0.95rem !important; }
+    #screen-cliente .btn-primary { background: #222222 !important; color: #ffffff !important; font-weight: 700 !important; }
+    #screen-cliente .alert { color: #000000 !important; }
+    #screen-confirmacion .field label { color: #000000 !important; font-weight: 700 !important; }
+
+    /* ═══════════════════════════════════════════
+       ORNAMENTAL BORDER UTILITY
+    ═══════════════════════════════════════════ */
+    .orn-border {
+      border: 1px solid var(--gold-dark);
+      box-shadow: inset 0 0 0 3px rgba(201,168,76,.07), var(--shadow);
+    }
+
+    /* ═══════════════════════════════════════════
+       APP SHELL
+    ═══════════════════════════════════════════ */
+    #app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--black-mid);
+      border-bottom: 1px solid var(--gold-dark);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,.8);
+    }
+    header .back-btn {
+      background: none;
+      color: var(--gold);
+      font-size: 1.848rem;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      transition: background .2s;
+      display: none;
+    }
+    header .back-btn:hover { background: rgba(201,168,76,.1); }
+    header .back-btn.visible { display: block; }
+    header .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    header .logo-main {
+      font-family: var(--font-display);
+      font-size: clamp(.85rem, 3vw, 1.1rem);
+      color: var(--gold);
+      letter-spacing: .04em;
+    }
+    header .logo-sub {
+      font-family: var(--font-head);
+      font-size: clamp(.55rem, 2vw, .7rem);
+      color: var(--white-dim);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    header .header-right {
+      margin-left: auto;
+      font-family: var(--font-head);
+      font-size: 0.99rem;
+      color: var(--gold-dark);
+      text-align: right;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ═══════════════════════════════════════════
+       SCREENS (single-page routing)
+    ═══════════════════════════════════════════ */
+    .screen { display: none; flex-direction: column; flex: 1; }
+    .screen.active { display: flex; }
+
+    /* ═══════════════════════════════════════════
+       SCREEN: HOME
+    ═══════════════════════════════════════════ */
+    #screen-home {
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 60px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.06) 0%, transparent 65%),
+        radial-gradient(ellipse at 50% 100%, rgba(201,168,76,.04) 0%, transparent 50%);
+    }
+    .home-hero {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+    .home-hero .crown { font-size: 3.696rem; margin-bottom: 10px; }
+    .home-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 6vw, 2.2rem);
+      color: var(--gold);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .home-hero .tagline {
+      font-family: var(--font-head);
+      font-size: clamp(.65rem, 2.5vw, .85rem);
+      color: var(--white-dim);
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .home-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 auto 48px;
+      max-width: 340px;
+      width: 100%;
+    }
+    .home-divider span { flex: 1; height: 1px; background: var(--gold-dark); }
+    .home-divider em { color: var(--gold); font-style: normal; font-size: 1.32rem; }
+
+    .group-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .btn-group {
+      background: var(--black-card);
+      border: 1px solid var(--gold-dark);
+      color: var(--white);
+      padding: 22px 28px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 1.386rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all .25s;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-group .glabel { font-weight: 700; display: flex; flex-direction: column; }
+    .btn-group::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,.08) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    .btn-group:hover { border-color: var(--gold); box-shadow: var(--glow); transform: translateY(-2px); }
+    .btn-group:hover::before { opacity: 1; }
+    .btn-group .gicon { font-size: 2.376rem; }
+
+    .btn-group .glabel span { font-size: 0.858rem; color: var(--gold-dark); letter-spacing: .15em; text-transform: uppercase; }
+    .btn-group .garrow { margin-left: auto; color: var(--gold-dark); font-size: 1.32rem; }
+
+    .btn-admin {
+      margin-top: 28px;
+      background: none;
+      border: 1px solid rgba(201,168,76,.2);
+      color: var(--white-dim);
+      padding: 10px 22px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 0.946rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transition: all .2s;
+    }
+    .btn-admin:hover { border-color: var(--gold-dark); color: var(--gold); }
+
+    /* ═══════════════════════════════════════════
+       MODAL / OVERLAY
+    ═══════════════════════════════════════════ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--black-card);
+      border: 1px solid var(--gold-dark);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 48px rgba(0,0,0,.9), var(--glow);
+      position: relative;
+    }
+    .modal h2 {
+      font-family: var(--font-head);
+      color: var(--gold);
+      font-size: 1.32rem;
+      letter-spacing: .1em;
+      margin-bottom: 6px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .modal .modal-sub {
+      text-align: center;
+      color: var(--white-dim);
+      font-size: 1.034rem;
+      margin-bottom: 24px;
+      font-family: var(--font-head);
+      letter-spacing: .06em;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 14px;
+      background: none;
+      color: var(--white-dim);
+      font-size: 1.584rem;
+      padding: 4px;
+      transition: color .2s;
+    }
+    .modal-close:hover { color: var(--gold); }
+
+    /* FIELD */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+    }
+    .field input, .field textarea, .field select {
+      width: 100%;
+      background: var(--black-panel);
+      border: 1px solid var(--gold-dark);
+      color: var(--white);
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      font-weight: 700;
+      transition: border-color .2s;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201,168,76,.15);
+    }
+    .field input::placeholder { color: var(--white-dim); opacity: 0.7; font-weight: 500; }
+    .field textarea { resize: vertical; min-height: 72px; }
+    .field select option { background: var(--black-mid); font-weight: 700; }
+
+    /* BUTTONS SHARED */
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: var(--black);
+      padding: 12px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 1.122rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      transition: all .2s;
+      box-shadow: 0 4px 14px rgba(201,168,76,.3);
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn-secondary {
+      width: 100%;
+      background: none;
+      border: 1px solid var(--gold-dark);
+      color: var(--gold);
+      padding: 11px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 1.078rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: all .2s;
+    }
+    .btn-secondary:hover { background: rgba(201,168,76,.08); }
+    .btn-danger {
+      background: rgba(192,57,43,.15) !important;
+      border: 1px solid var(--red-alert);
+      color: var(--red-alert);
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 0.946rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: all .2s;
+    }
+    .btn-danger:hover { background: rgba(192,57,43,.30) !important; }
+    body.light-mode .btn-danger { background: rgba(192,57,43,.12) !important; color: #c0392b !important; border-color: #c0392b !important; }
+    .btn-icon {
+      background: none;
+      color: var(--gold-dark);
+      padding: 6px 8px;
+      border-radius: var(--radius);
+      font-size: 1.078rem;
+      transition: all .2s;
+    }
+    .btn-icon:hover { color: var(--gold); background: rgba(201,168,76,.08); }
+
+    /* ALERT */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 1.078rem;
+      margin-bottom: 14px;
+      border-left: 3px solid;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert.error { border-color: var(--red-alert); background: rgba(192,57,43,.12); color: #e07070; }
+    .alert.success { border-color: var(--green-ok); background: rgba(39,174,96,.12); color: #7ec99a; }
+    .alert.warning { border-color: var(--gold); background: rgba(201,168,76,.1); color: var(--gold-light); }
+
+    /* ═══════════════════════════════════════════
+       SCREEN: AGENDA (GRUPO)
+    ═══════════════════════════════════════════ */
+    #screen-agenda {
+      padding: 24px 20px;
+      gap: 20px;
+    }
+    .agenda-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .agenda-title {
+      font-family: var(--font-head);
+      font-size: 1.452rem;
+      color: var(--gold);
+      letter-spacing: .08em;
+    }
+    .agenda-title small {
+      display: block;
+      font-size: 0.858rem;
+      color: var(--white-dim);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .btn-add {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: var(--black);
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 0.99rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 12px rgba(201,168,76,.3);
+      transition: all .2s;
+    }
+    .btn-add:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* SERENATA CARD */
+    .serenata-list { display: flex; flex-direction: column; gap: 14px; }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--white-dim);
+    }
+    .empty-state .empty-icon { font-size: 3.96rem; margin-bottom: 14px; opacity: .4; }
+    .empty-state p {
+      font-family: var(--font-head);
+      font-size: 1.056rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      opacity: .5;
+    }
+
+    .serenata-card {
+      background: var(--black-card);
+      border: 1px solid var(--gold-dark);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .serenata-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--gold), var(--gold-dark));
+    }
+    .serenata-card .sc-datetime {
+      font-family: var(--font-head);
+      font-size: 0.946rem;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .serenata-card .sc-datetime span { opacity: 1; font-size: 1.1rem; font-weight: 800; color: var(--gold-light); }
+    .serenata-card .sc-for {
+      font-family: var(--font-head);
+      font-size: 1.32rem;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .serenata-card .sc-from {
+      font-size: 1.078rem;
+      color: var(--white-dim);
+      margin-bottom: 10px;
+    }
+    .serenata-card .sc-details {
+      font-size: 1.056rem;
+      color: var(--white-dim);
+      line-height: 1.6;
+    }
+    .serenata-card .sc-details .detail-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2px;
+      align-items: center;
+    }
+    .serenata-card .sc-details .detail-row .di { min-width: 18px; }
+    .serenata-card .sc-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(201,168,76,.15);
+    }
+    .badge-group {
+      display: inline-block;
+      font-family: var(--font-head);
+      font-size: 0.792rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .badge-a { background: rgba(201,168,76,.25) !important; color: #9a7a2e !important; border: 1px solid #c9a84c !important; }
+    .badge-b { background: rgba(80,140,200,.20) !important; color: #3a7abf !important; border: 1px solid #336699 !important; }
+    body.light-mode .badge-a { background: rgba(201,168,76,.25) !important; color: #7a5a10 !important; border: 1px solid #c9a84c !important; }
+    body.light-mode .badge-b { background: rgba(80,140,200,.20) !important; color: #1a5a9f !important; border: 1px solid #336699 !important; }
+
+    /* ═══════════════════════════════════════════
+       SCREEN: ADMIN
+    ═══════════════════════════════════════════ */
+    #screen-admin {
+      padding: 24px 20px;
+      gap: 20px;
+    }
+    .admin-title {
+      font-family: var(--font-head);
+      font-size: 1.452rem;
+      color: var(--gold);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .admin-title small {
+      display: block;
+      font-size: 0.814rem;
+      color: var(--white-dim);
+      letter-spacing: .14em;
+      margin-top: 2px;
+    }
+
+    .admin-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3px;
+      background: var(--black-mid);
+      border: 1px solid var(--gold-dark);
+      border-radius: var(--radius);
+      padding: 4px;
+    }
+    .tab-btn {
+      background: none;
+      color: var(--white-dim);
+      padding: 10px 4px;
+      border-radius: 4px;
+      font-family: var(--font-head);
+      font-size: 0.814rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      transition: all .2s;
+      white-space: nowrap;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: var(--black);
+      font-weight: 700;
+    }
+    .tab-btn:hover:not(.active) { color: var(--gold); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* CONFIG SECTION */
+    .config-section {
+      background: var(--black-card);
+      border: 1px solid var(--gold-dark);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .config-section h3 {
+      font-family: var(--font-head);
+      font-size: 1.056rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(201,168,76,.2);
+    }
+
+    /* SERENATA CARD IN ADMIN (extended) */
+    .admin-sc-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .serenata-card .sc-admin-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(201,168,76,.12);
+    }
+    .btn-transfer {
+      background: none;
+      border: 1px solid var(--gold-dark);
+      color: var(--gold);
+      padding: 7px 12px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 0.858rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: all .2s;
+    }
+    .btn-transfer:hover { background: rgba(201,168,76,.1); }
+
+    /* LOADING */
+    .loading-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 30px;
+    }
+    .loading-dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold-dark);
+      animation: bounce 1.2s infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(.8); opacity: .4; }
+      40% { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--black-card);
+      border: 1px solid var(--gold-dark);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: var(--font-head);
+      font-size: 1.034rem;
+      letter-spacing: .06em;
+      z-index: 500;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 8px 30px rgba(0,0,0,.7);
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* DIVIDER */
+    .gold-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .gold-divider span { flex: 1; height: 1px; background: rgba(201,168,76,.2); }
+    .gold-divider em { color: var(--gold-dark); font-style: normal; font-size: 1.056rem; }
+
+    /* CONFLICT PANEL */
+    .conflict-box {
+      background: rgba(192,57,43,.1);
+      border: 1px solid var(--red-alert);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 10px;
+    }
+    .conflict-box p {
+      color: #e07070;
+      font-size: 1.078rem;
+      margin-bottom: 12px;
+    }
+
+    /* WHATSAPP BUTTON */
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #25D366;
+      background: rgba(37,211,102,.1);
+      border: 1px solid rgba(37,211,102,.3);
+      border-radius: 4px;
+      padding: 3px 6px;
+      margin-left: 8px;
+      text-decoration: none;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .btn-whatsapp:hover {
+      background: rgba(37,211,102,.2);
+      border-color: #25D366;
+      transform: scale(1.08);
+    }
+    .serenata-card .sc-details .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+      flex-wrap: wrap;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-bar select {
+      background: var(--black-panel);
+      border: 1px solid var(--gold-dark);
+      color: var(--white);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 0.946rem;
+      letter-spacing: .08em;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 400px) {
+      .modal { padding: 24px 18px; }
+      .btn-group { padding: 18px 20px; }
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--black-mid); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+    body.light-mode ::-webkit-scrollbar-track { background: #f0f0f0; }
+
+    /* PWA STATUS BAR */
+    @media (display-mode: standalone) {
+      header { padding-top: env(safe-area-inset-top, 14px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- FONDO ORNAMENTAL: 4 SVGs posicionados en cada esquina -->
+<!-- Esquina superior izquierda -->
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" style="position:fixed;top:0;left:0;z-index:0;pointer-events:none;" viewBox="0 0 140 140">
+  <g fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.38">
+    <path d="M4,4 C30,2 70,10 100,30 C80,50 50,65 15,55 C4,40 2,18 4,4Z"/>
+    <path d="M4,4 C25,20 55,45 80,80"/>
+    <path d="M4,4 C20,25 45,55 80,80"/>
+    <path d="M4,20 C20,14 38,10 55,4"/>
+    <path d="M20,4 C14,20 10,38 4,55"/>
+    <path d="M18,40 C30,28 48,34 44,50 C40,64 22,58 18,40Z"/>
+    <path d="M40,18 C28,30 34,48 50,44 C64,40 58,22 40,18Z"/>
+    <path d="M15,70 C30,55 50,58 48,72 C46,85 28,88 15,70Z"/>
+    <path d="M70,15 C55,30 58,50 72,48 C85,46 88,28 70,15Z"/>
+    <path d="M10,85 C22,75 38,80 35,92"/>
+    <path d="M85,10 C75,22 80,38 92,35"/>
+  </g>
+  <g fill="#c9a84c" opacity="0.28">
+    <circle cx="30" cy="30" r="4"/>
+    <circle cx="30" cy="30" r="2"/>
+    <circle cx="55" cy="20" r="2.5"/>
+    <circle cx="20" cy="55" r="2.5"/>
+    <circle cx="48" cy="48" r="3"/>
+  </g>
+</svg>
+
+<!-- Esquina superior derecha -->
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" style="position:fixed;top:0;right:0;z-index:0;pointer-events:none;transform:scaleX(-1);" viewBox="0 0 140 140">
+  <g fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.38">
+    <path d="M4,4 C30,2 70,10 100,30 C80,50 50,65 15,55 C4,40 2,18 4,4Z"/>
+    <path d="M4,4 C25,20 55,45 80,80"/>
+    <path d="M4,4 C20,25 45,55 80,80"/>
+    <path d="M4,20 C20,14 38,10 55,4"/>
+    <path d="M20,4 C14,20 10,38 4,55"/>
+    <path d="M18,40 C30,28 48,34 44,50 C40,64 22,58 18,40Z"/>
+    <path d="M40,18 C28,30 34,48 50,44 C64,40 58,22 40,18Z"/>
+    <path d="M15,70 C30,55 50,58 48,72 C46,85 28,88 15,70Z"/>
+    <path d="M70,15 C55,30 58,50 72,48 C85,46 88,28 70,15Z"/>
+    <path d="M10,85 C22,75 38,80 35,92"/>
+    <path d="M85,10 C75,22 80,38 92,35"/>
+  </g>
+  <g fill="#c9a84c" opacity="0.28">
+    <circle cx="30" cy="30" r="4"/>
+    <circle cx="30" cy="30" r="2"/>
+    <circle cx="55" cy="20" r="2.5"/>
+    <circle cx="20" cy="55" r="2.5"/>
+    <circle cx="48" cy="48" r="3"/>
+  </g>
+</svg>
+
+<!-- Esquina inferior izquierda -->
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" style="position:fixed;bottom:0;left:0;z-index:0;pointer-events:none;transform:scaleY(-1);" viewBox="0 0 140 140">
+  <g fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.38">
+    <path d="M4,4 C30,2 70,10 100,30 C80,50 50,65 15,55 C4,40 2,18 4,4Z"/>
+    <path d="M4,4 C25,20 55,45 80,80"/>
+    <path d="M4,4 C20,25 45,55 80,80"/>
+    <path d="M4,20 C20,14 38,10 55,4"/>
+    <path d="M20,4 C14,20 10,38 4,55"/>
+    <path d="M18,40 C30,28 48,34 44,50 C40,64 22,58 18,40Z"/>
+    <path d="M40,18 C28,30 34,48 50,44 C64,40 58,22 40,18Z"/>
+    <path d="M15,70 C30,55 50,58 48,72 C46,85 28,88 15,70Z"/>
+    <path d="M70,15 C55,30 58,50 72,48 C85,46 88,28 70,15Z"/>
+    <path d="M10,85 C22,75 38,80 35,92"/>
+    <path d="M85,10 C75,22 80,38 92,35"/>
+  </g>
+  <g fill="#c9a84c" opacity="0.28">
+    <circle cx="30" cy="30" r="4"/>
+    <circle cx="30" cy="30" r="2"/>
+    <circle cx="55" cy="20" r="2.5"/>
+    <circle cx="20" cy="55" r="2.5"/>
+    <circle cx="48" cy="48" r="3"/>
+  </g>
+</svg>
+
+<!-- Esquina inferior derecha -->
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" style="position:fixed;bottom:0;right:0;z-index:0;pointer-events:none;transform:scale(-1,-1);" viewBox="0 0 140 140">
+  <g fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.38">
+    <path d="M4,4 C30,2 70,10 100,30 C80,50 50,65 15,55 C4,40 2,18 4,4Z"/>
+    <path d="M4,4 C25,20 55,45 80,80"/>
+    <path d="M4,4 C20,25 45,55 80,80"/>
+    <path d="M4,20 C20,14 38,10 55,4"/>
+    <path d="M20,4 C14,20 10,38 4,55"/>
+    <path d="M18,40 C30,28 48,34 44,50 C40,64 22,58 18,40Z"/>
+    <path d="M40,18 C28,30 34,48 50,44 C64,40 58,22 40,18Z"/>
+    <path d="M15,70 C30,55 50,58 48,72 C46,85 28,88 15,70Z"/>
+    <path d="M70,15 C55,30 58,50 72,48 C85,46 88,28 70,15Z"/>
+    <path d="M10,85 C22,75 38,80 35,92"/>
+    <path d="M85,10 C75,22 80,38 92,35"/>
+  </g>
+  <g fill="#c9a84c" opacity="0.28">
+    <circle cx="30" cy="30" r="4"/>
+    <circle cx="30" cy="30" r="2"/>
+    <circle cx="55" cy="20" r="2.5"/>
+    <circle cx="20" cy="55" r="2.5"/>
+    <circle cx="48" cy="48" r="3"/>
+  </g>
+</svg>
+
+<div id="app" style="position:relative;z-index:1;">
+  <!-- HEADER -->
+  <header>
+    <button class="back-btn" id="back-btn" aria-label="Volver">◀</button>
+    <div class="logo-wrap">
+      <div class="logo-main">🎺 Mariachi MexiColombia</div>
+      <div class="logo-sub">Agenda de Serenatas</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+      <div class="header-right" id="header-context"></div>
+      <button id="btn-toggle-mode" title="Cambiar modo" style="background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:6px 10px;border-radius:var(--radius);font-family:var(--font-head);font-size: 0.84rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;white-space:nowrap;">☀ Claro</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ══════ SCREEN: HOME ══════ -->
+    <section id="screen-home" class="screen">
+      <div class="home-hero">
+        <div class="crown">🎼</div>
+        <h1>Mariachi<br>MexiColombia</h1>
+        <p class="tagline">Prestigio y Pasión</p>
+      </div>
+      <div class="home-divider">
+        <span></span><em>♪</em><span></span>
+      </div>
+      <div class="group-buttons">
+        <button class="btn-group" id="btn-grupo-a">
+          <span class="gicon">🎷</span>
+          <span class="glabel">
+            Grupo A
+            <span>Toca para acceder</span>
+          </span>
+          <span class="garrow">›</span>
+        </button>
+        <button class="btn-group" id="btn-grupo-b">
+          <span class="gicon">🎻</span>
+          <span class="glabel">
+            Grupo B
+            <span>Toca para acceder</span>
+          </span>
+          <span class="garrow">›</span>
+        </button>
+        <button class="btn-admin" id="btn-admin-home">🔐 Administrador — Ver Todo</button>
+      </div>
+    </section>
+
+    <!-- ══════ SCREEN: AGENDA ══════ -->
+    <section id="screen-agenda" class="screen">
+      <div class="agenda-header">
+        <div class="agenda-title">
+          <span id="agenda-group-label"></span>
+          <small id="agenda-group-sub"></small>
+        </div>
+        <button class="btn-add" id="btn-nueva-serenata">
+          ＋ Nueva Serenata
+        </button>
+      </div>
+      <div class="filter-bar" style="padding:0 20px 12px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <label style="font-family:var(--font-head);font-size: 0.82rem;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">Desde</label>
+          <input type="date" id="agenda-filter-desde" style="background:var(--black-panel);border:1px solid var(--gold-dark);color:var(--white);padding:8px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size: 0.98rem;"/>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <label style="font-family:var(--font-head);font-size: 0.82rem;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">Hasta</label>
+          <input type="date" id="agenda-filter-hasta" style="background:var(--black-panel);border:1px solid var(--gold-dark);color:var(--white);padding:8px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size: 0.98rem;"/>
+        </div>
+        <button id="btn-reset-agenda-filter" style="background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:8px 14px;border-radius:var(--radius);font-family:var(--font-head);font-size: 0.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">✕ Hoy</button>
+      </div>
+      <div id="serenata-list-container">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
+    </section>
+
+    <!-- ══════ SCREEN: LINK INVÁLIDO ══════ -->
+    <section id="screen-link-invalido" class="screen" style="background:#ffffff;">
+      <div style="padding:60px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;background:#ffffff;">
+        <div id="link-invalido-icon" style="font-size:4.2rem;margin-bottom:20px;">✅</div>
+        <h2 id="link-invalido-titulo" style="font-family:var(--font-head);color:#000000;font-size:1.32rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;"></h2>
+        <p id="link-invalido-msg" style="font-size:1.08rem;color:#333333;font-weight:700;line-height:1.7;max-width:300px;"></p>
+      </div>
+    </section>
+
+    <!-- ══════ SCREEN: CLIENTE ══════ -->
+    <section id="screen-cliente" class="screen" style="background:#ffffff;">
+      <div style="padding:24px 20px;max-width:480px;margin:0 auto;width:100%;background:#ffffff;">
+        <div style="text-align:center;margin-bottom:28px;">
+          <div style="font-size:2.4rem;margin-bottom:8px;">🎺</div>
+          <h2 style="font-family:var(--font-head);color:#000000;font-size:1.2rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Agendar Serenata</h2>
+          <p style="font-family:var(--font-head);font-size:0.86rem;color:#333333;font-weight:700;letter-spacing:.1em;">Mariachi MexiColombia · Prestigio y Pasión</p>
+        </div>
+        <div class="alert error" id="alert-cliente" style="display:none;"></div>
+        <div class="alert warning" id="alert-cliente-conflict" style="display:none;"></div>
+        <div class="field">
+          <label>📅 Fecha *</label>
+          <input type="date" id="c-fecha" />
+        </div>
+        <div class="field">
+          <label>🕐 Hora *</label>
+          <input type="time" id="c-hora" />
+        </div>
+        <div id="c-conflict-indicator" style="display:none;" class="alert warning show">
+          ⚠️ Este horario ya está reservado. Por favor elige otra fecha u hora.
+        </div>
+        <div class="field">
+          <label>👤 Para quién es *</label>
+          <input type="text" id="c-para" placeholder="Nombre del homenajeado..." />
+        </div>
+        <div class="field">
+          <label>💌 De parte de *</label>
+          <input type="text" id="c-de-parte" placeholder="Nombre del remitente..." />
+        </div>
+        <div class="field">
+          <label>📍 Dirección completa *</label>
+          <input type="text" id="c-direccion" placeholder="Calle, barrio, ciudad..." />
+        </div>
+        <div class="field">
+          <label>🎉 Motivo *</label>
+          <input type="text" id="c-motivo" placeholder="Cumpleaños, aniversario..." />
+        </div>
+        <div class="field">
+          <label>📞 Nombre del contratante *</label>
+          <input type="text" id="c-contratante-nombre" placeholder="Nombre completo..." />
+        </div>
+        <div class="field">
+          <label>📱 Teléfono del contratante *</label>
+          <input type="tel" id="c-contratante-tel" placeholder="3001234567" />
+        </div>
+        <button class="btn-primary" id="btn-guardar-cliente" style="margin-top:8px;">✅ Confirmar Serenata</button>
+      </div>
+    </section>
+
+    <!-- ══════ SCREEN: CONFIRMACION CLIENTE ══════ -->
+    <section id="screen-confirmacion" class="screen" style="background:#ffffff;">
+      <div style="padding:40px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;background:#ffffff;">
+        <div style="font-size:3.6rem;margin-bottom:16px;">🎺</div>
+        <h2 style="font-family:var(--font-head);color:#000000;font-size:1.32rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">¡Serenata Confirmada!</h2>
+        <p style="font-size:1.08rem;color:#333333;font-weight:700;line-height:1.7;max-width:320px;margin-bottom:24px;">Tu serenata ha sido agendada exitosamente. Nos pondremos en contacto contigo para confirmar los detalles.</p>
+        <div id="confirmacion-detalle" style="background:#f5f5f5;border:1px solid #cccccc;border-radius:var(--radius);padding:20px;width:100%;max-width:360px;text-align:left;font-size:1.02rem;color:#000000;font-weight:700;line-height:1.8;"></div>
+      </div>
+    </section>
+
+    <!-- ══════ SCREEN: ADMIN ══════ -->
+    <section id="screen-admin" class="screen">
+      <div class="admin-title">
+        Panel Administrador
+        <small>Vista completa · Gestión total</small>
+      </div>
+
+      <div class="admin-tabs" style="grid-template-columns:repeat(3,1fr);">
+        <button class="tab-btn active" data-tab="tab-todas">📋 Todas</button>
+        <button class="tab-btn" data-tab="tab-links">🔗 Links</button>
+        <button class="tab-btn" data-tab="tab-buzon" id="tab-btn-buzon">📬 Buzón</button>
+      </div>
+
+      <!-- TAB: TODAS -->
+      <div id="tab-todas" class="tab-content active">
+        <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;background:var(--black-panel);border:1px solid var(--gold-dark);border-radius:var(--radius);padding:8px 14px;">
+          <span style="color:var(--gold-dark);font-size:1.1rem;">🔍</span>
+          <input type="tel" id="admin-search-tel" placeholder="Buscar por número de teléfono..." style="background:none;border:none;color:var(--white);font-family:var(--font-body);font-size:0.98rem;font-weight:700;width:100%;outline:none;" />
+          <button id="btn-clear-search" style="background:none;border:none;color:var(--white-dim);font-size:1.1rem;cursor:pointer;display:none;padding:0 4px;">✕</button>
+        </div>
+        <div class="filter-bar" style="margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <select id="admin-filter-group">
+            <option value="all">Todos los grupos</option>
+            <option value="A">🎷 Grupo A</option>
+            <option value="B">🎻 Grupo B</option>
+          </select>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <label style="font-family:var(--font-head);font-size: 0.82rem;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">Desde</label>
+            <input type="date" id="admin-filter-desde" style="background:var(--black-panel);border:1px solid var(--gold-dark);color:var(--white);padding:8px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size: 0.98rem;"/>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <label style="font-family:var(--font-head);font-size: 0.82rem;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">Hasta</label>
+            <input type="date" id="admin-filter-hasta" style="background:var(--black-panel);border:1px solid var(--gold-dark);color:var(--white);padding:8px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size: 0.98rem;"/>
+          </div>
+          <button id="btn-reset-filter" style="background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:8px 14px;border-radius:var(--radius);font-family:var(--font-head);font-size: 0.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">✕ Limpiar</button>
+        </div>
+        <div id="admin-contador" style="font-family:var(--font-head);font-size:0.9rem;font-weight:700;color:var(--gold);letter-spacing:.08em;padding:6px 2px 10px;"></div>
+        <div id="admin-serenata-list">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+
+      <!-- TAB: BUZÓN -->
+      <!-- TAB: BUZÓN -->
+      <div id="tab-buzon" class="tab-content">
+        <div class="config-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+            <h3 style="margin-bottom:0;padding-bottom:0;border-bottom:none;">📬 Notificaciones de Clientes</h3>
+            <button id="btn-marcar-todos-leidos" style="background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:6px 12px;border-radius:var(--radius);font-family:var(--font-head);font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-weight:700;">✓ Marcar todos leídos</button>
+          </div>
+          <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <label style="font-family:var(--font-head);font-size:0.75rem;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">Desde</label>
+              <input type="date" id="buzon-desde" style="background:var(--black-panel);border:1px solid var(--gold-dark);color:var(--white);padding:7px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;font-weight:700;"/>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <label style="font-family:var(--font-head);font-size:0.75rem;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">Hasta</label>
+              <input type="date" id="buzon-hasta" style="background:var(--black-panel);border:1px solid var(--gold-dark);color:var(--white);padding:7px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;font-weight:700;"/>
+            </div>
+            <button id="btn-vaciar-buzon" style="background:rgba(192,57,43,.15);border:1px solid var(--red-alert);color:var(--red-alert);padding:7px 12px;border-radius:var(--radius);font-family:var(--font-head);font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-weight:700;">🗑 Vaciar rango</button>
+          </div>
+          <div id="buzon-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB: LINKS -->
+      <div id="tab-links" class="tab-content">
+        <div class="config-section">
+          <h3>🔗 Links Permanentes de Agendamiento</h3>
+          <p style="font-size:0.92rem;color:var(--white-dim);margin-bottom:20px;line-height:1.6;font-weight:700;">
+            Cada grupo tiene un link permanente. Compártelo con los clientes para que agenden su serenata.
+          </p>
+          <div style="background:var(--black-panel);border:1px solid var(--gold-dark);border-radius:var(--radius);padding:14px;margin-bottom:12px;">
+            <p style="font-family:var(--font-head);font-size:0.75rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700;">🎷 Link Grupo A</p>
+            <p id="link-perm-a" style="font-size:0.88rem;color:var(--white);word-break:break-all;line-height:1.5;font-weight:700;">—</p>
+            <button onclick="copiarLinkPerm('A')" style="margin-top:10px;background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:7px 14px;border-radius:var(--radius);font-family:var(--font-head);font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-weight:700;">📋 Copiar Link A</button>
+          </div>
+          <div style="background:var(--black-panel);border:1px solid var(--gold-dark);border-radius:var(--radius);padding:14px;margin-bottom:20px;">
+            <p style="font-family:var(--font-head);font-size:0.75rem;color:#8aabf0;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700;">🎻 Link Grupo B</p>
+            <p id="link-perm-b" style="font-size:0.88rem;color:var(--white);word-break:break-all;line-height:1.5;font-weight:700;">—</p>
+            <button onclick="copiarLinkPerm('B')" style="margin-top:10px;background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:7px 14px;border-radius:var(--radius);font-family:var(--font-head);font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-weight:700;">📋 Copiar Link B</button>
+          </div>
+          <button class="btn-danger" id="btn-renovar-links" onclick="renovarLinks()" style="width:100%;padding:12px;font-size:0.88rem;">🔄 Renovar Links (los anteriores quedarán inutilizables)</button>
+        </div>
+      </div>
+
+
+    </section>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+
+
+
+
+
+<!-- Modal: Nueva / Editar Serenata -->
+<div class="overlay" id="overlay-serenata">
+  <div class="modal" style="max-height:90vh;overflow-y:auto;max-width:480px;">
+    <button class="modal-close" id="close-serenata">✕</button>
+    <h2 id="modal-serenata-title">Nueva Serenata</h2>
+    <p class="modal-sub" id="modal-serenata-sub"></p>
+    <div class="alert error" id="alert-serenata"></div>
+    <div class="alert warning" id="alert-conflict"></div>
+
+    <div class="field">
+      <label>📅 Fecha *</label>
+      <input type="date" id="f-fecha" />
+    </div>
+    <div class="field">
+      <label>🕐 Hora *</label>
+      <input type="time" id="f-hora" />
+    </div>
+    <div id="conflict-indicator" style="display:none;" class="alert warning show" style="margin-bottom:14px;">
+      ⚠️ Este horario ya está ocupado por otra serenata.
+    </div>
+    <div class="field">
+      <label>📍 Dirección Completa *</label>
+      <input type="text" id="f-direccion" placeholder="Calle, barrio, ciudad..." />
+    </div>
+    <div class="field">
+      <label>🎉 Motivo de la Serenata *</label>
+      <input type="text" id="f-motivo" placeholder="Cumpleaños, aniversario, serenata..." />
+    </div>
+    <div class="field">
+      <label>👤 Para Quién es *</label>
+      <input type="text" id="f-para" placeholder="Nombre del homenajeado..." />
+    </div>
+    <div class="field">
+      <label>💌 De Parte de *</label>
+      <input type="text" id="f-de-parte" placeholder="Nombre del remitente..." />
+    </div>
+    <div class="field">
+      <label>📞 Nombre del Contratante *</label>
+      <input type="text" id="f-contratante-nombre" placeholder="Nombre completo..." />
+    </div>
+    <div class="field">
+      <label>📱 Teléfono del Contratante *</label>
+      <input type="tel" id="f-contratante-tel" placeholder="3001234567" />
+    </div>
+    <div class="field" id="field-grupo-admin" style="display:none;">
+      <label>🎺 Grupo *</label>
+      <select id="f-grupo-admin">
+        <option value="A">🎷 Grupo A</option>
+        <option value="B">🎻 Grupo B</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>💬 Comentario</label>
+      <input type="text" id="f-comentario" placeholder="Canción inicial, segundo teléfono, indicaciones..." />
+    </div>
+    <div class="field">
+      <label>💰 Precio</label>
+      <input type="number" id="f-precio" placeholder="0" min="0" step="1000" />
+    </div>
+    <button class="btn-primary" id="btn-guardar-serenata" style="margin-top:8px;">Guardar Serenata</button>
+  </div>
+</div>
+
+<!-- Modal: Transferir -->
+<div class="overlay" id="overlay-transfer">
+  <div class="modal">
+    <button class="modal-close" id="close-transfer">✕</button>
+    <h2 id="modal-transfer-title">Trasladar Serenata</h2>
+    <p class="modal-sub" id="modal-transfer-sub"></p>
+    <div class="alert error" id="alert-transfer"></div>
+    <div class="alert warning" id="alert-transfer-conflict" style="display:none;"></div>
+    <div id="transfer-conflict-actions" style="display:none;">
+      <div class="field">
+        <label>📅 Nueva Fecha para Destino</label>
+        <input type="date" id="t-new-fecha" />
+      </div>
+      <div class="field">
+        <label>🕐 Nueva Hora para Destino</label>
+        <input type="time" id="t-new-hora" />
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn-secondary" id="btn-cancel-transfer">Cancelar</button>
+      <button class="btn-primary" id="btn-confirm-transfer">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Confirmación eliminar -->
+<div class="overlay" id="overlay-confirm-delete">
+  <div class="modal" style="max-width:360px;">
+    <h2>⚠️ Eliminar Serenata</h2>
+    <p class="modal-sub">Esta acción no se puede deshacer.</p>
+    <p style="text-align:center;color:var(--white-dim);font-size: 1.02rem;margin-bottom:20px;" id="delete-confirm-text"></p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" id="btn-cancel-delete">Cancelar</button>
+      <button class="btn-danger" style="flex:1;" id="btn-confirm-delete">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   FIREBASE CONFIG — Mariachi MexiColombia
+═══════════════════════════════════════════════════ */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBzrnBtms_9k2mmOuAQE68qzo2VG0rIGME",
+  authDomain:        "mariachi-mexicolombia.firebaseapp.com",
+  databaseURL:       "https://mariachi-mexicolombia-default-rtdb.firebaseio.com",
+  projectId:         "mariachi-mexicolombia",
+  storageBucket:     "mariachi-mexicolombia.firebasestorage.app",
+  messagingSenderId: "353413687564",
+  appId:             "1:353413687564:web:3af64cb2e24065929ac129"
+};
+
+const DEFAULTS = {
+  codeA:     "grupoA123",
+  codeB:     "grupoB456",
+  adminUser: "admin",
+  adminPass: "mariachi2024"
+};
+
+function _genId() { return 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let state = {
+  screen: 'home',        // home | agenda | admin
+  currentGroup: null,    // 'A' | 'B'
+  isAdmin: false,
+  config: { ...DEFAULTS },
+  serenatasA: {},
+  serenatasB: {},
+  editingId: null,
+  editingGroup: null,
+  pendingTransfer: null, // { id, fromGroup, toGroup }
+  clientToken: null,
+  clientGroup: null,
+  pendingDelete: null,
+};
+
+/* ═══════════════════════════════════════════════════
+   INIT FIREBASE
+═══════════════════════════════════════════════════ */
+firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.database();
+
+function initFirebaseListeners() {
+  db.ref('config').on('value', snap => {
+    const val = snap.val();
+    if (val) { state.config = { ...DEFAULTS, ...val }; }
+    else      { db.ref('config').set(DEFAULTS); }
+    renderCurrentScreen();
+  });
+  db.ref('serenatas/A').on('value', snap => {
+    state.serenatasA = snap.val() || {};
+    renderCurrentScreen();
+  });
+  db.ref('serenatas/B').on('value', snap => {
+    state.serenatasB = snap.val() || {};
+    renderCurrentScreen();
+  });
+
+  // Verificar acceso cliente — token único O link permanente
+  const _params = new URLSearchParams(window.location.search);
+  const _tok  = _params.get('token');
+  const _grupo = _params.get('grupo');
+  const _key   = _params.get('key');
+
+  function abrirFormCliente(grupo) {
+    state.clientGroup = grupo;
+    state.clientToken = null;
+    const hoyC = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+    document.getElementById('c-fecha').min = hoyC;
+    document.body.classList.add('light-mode');
+    document.getElementById('btn-toggle-mode').style.display = 'none';
+    showScreen('cliente');
+  }
+
+  function mostrarLinkInvalido(icon, titulo, msg) {
+    document.getElementById('link-invalido-icon').textContent = icon;
+    document.getElementById('link-invalido-titulo').textContent = titulo;
+    document.getElementById('link-invalido-msg').textContent = msg;
+    showScreen('link-invalido');
+  }
+
+  if (_grupo && _key) {
+    // Link permanente — verificar key en Firebase
+    db.ref('linksPermanentes').once('value').then(snap => {
+      const data = snap.val() || {};
+      const expectedKey = _grupo === 'A' ? data.keyA : data.keyB;
+      if (!expectedKey || _key !== expectedKey) {
+        mostrarLinkInvalido('⚠️', 'Link no válido', 'Este link ya no está disponible. Contacta al Mariachi MexiColombia para obtener el link actualizado.');
+        return;
+      }
+      abrirFormCliente(_grupo);
+    }).catch(() => mostrarLinkInvalido('⚠️', 'Error de conexión', 'No se pudo verificar el link. Verifica tu conexión e intenta de nuevo.'));
+  } else if (_tok) {
+    // Token de único uso (sistema anterior — compatibilidad)
+    db.ref(`tokens/${_tok}`).once('value').then(snap => {
+      const data = snap.val();
+      if (!data) { mostrarLinkInvalido('⚠️', 'Link no válido', 'Este link no existe o ya no está disponible.'); return; }
+      if (data.used) { mostrarLinkInvalido('✅', 'Serenata ya programada', 'Esta serenata ya fue programada exitosamente.'); return; }
+      state.clientToken = _tok;
+      abrirFormCliente(data.grupo);
+    }).catch(() => mostrarLinkInvalido('⚠️', 'Error de conexión', 'No se pudo verificar el link.'));
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   ROUTING / SCREENS
+═══════════════════════════════════════════════════ */
+function showScreen(name) {
+  state.screen = name;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+
+  const backBtn = document.getElementById('back-btn');
+  const hctx    = document.getElementById('header-context');
+
+  const header = document.querySelector('header');
+  if (name === 'home') {
+    backBtn.classList.remove('visible');
+    hctx.textContent = '';
+    header.style.display = '';
+  } else if (name === 'agenda') {
+    backBtn.classList.add('visible');
+    hctx.textContent = '🎺 ' + (state.currentGroup === 'A' ? 'Grupo A' : 'Grupo B');
+    header.style.display = '';
+  } else if (name === 'admin') {
+    backBtn.classList.add('visible');
+    hctx.textContent = '🔐 Admin';
+    header.style.display = '';
+  } else if (name === 'cliente' || name === 'confirmacion' || name === 'link-invalido') {
+    // Pantallas de cliente: ocultar header completamente
+    header.style.display = 'none';
+  }
+}
+
+document.getElementById('back-btn').addEventListener('click', () => {
+  state.currentGroup = null;
+  state.isAdmin = false;
+  showScreen('home');
+});
+
+function renderCurrentScreen() {
+  if (state.screen === 'agenda') renderAgenda();
+  if (state.screen === 'admin') renderAdmin();
+}
+
+/* ═══════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════ */
+function getSerenatas(group) {
+  return group === 'A' ? state.serenatasA : state.serenatasB;
+}
+
+function sortedSerenatas(obj) {
+  return Object.entries(obj || {})
+    .sort(([,a],[,b]) => (a.fecha + a.hora) < (b.fecha + b.hora) ? -1 : 1);
+}
+
+function isSlotOccupied(group, fecha, hora, excludeId = null) {
+  const sers = getSerenatas(group);
+  return Object.entries(sers).some(([id, s]) => {
+    if (id === excludeId) return false;
+    return s.fecha === fecha && s.hora === hora;
+  });
+}
+
+function formatDate(fecha) {
+  if (!fecha) return '';
+  const [y,m,d] = fecha.split('-');
+  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${d} ${months[parseInt(m)-1]} ${y}`;
+}
+
+function formatTime(hora) {
+  if (!hora) return '';
+  const [h,m] = hora.split(':');
+  const hNum = parseInt(h);
+  const ampm = hNum >= 12 ? 'PM' : 'AM';
+  const h12  = hNum % 12 || 12;
+  return `${h12}:${m} ${ampm}`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function openOverlay(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeOverlay(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function showAlert(id, msg, type = 'error') {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `alert ${type} show`;
+}
+function clearAlert(id) {
+  const el = document.getElementById(id);
+  el.textContent = '';
+  el.className = 'alert';
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER AGENDA
+═══════════════════════════════════════════════════ */
+function renderAgenda() {
+  const g = state.currentGroup;
+  document.getElementById('agenda-group-label').textContent =
+    (g === 'A' ? '🎷 Grupo A' : '🎻 Grupo B');
+
+  const filterDesde = document.getElementById('agenda-filter-desde').value;
+  const filterHasta = document.getElementById('agenda-filter-hasta').value;
+
+  let sers = sortedSerenatas(getSerenatas(g));
+
+  // Filtrar por rango de fechas
+  if (filterDesde || filterHasta) {
+    sers = sers.filter(([,s]) => {
+      if (filterDesde && s.fecha < filterDesde) return false;
+      if (filterHasta && s.fecha > filterHasta) return false;
+      return true;
+    });
+  }
+
+  const container = document.getElementById('serenata-list-container');
+
+  // Contador
+  const total = sers.length;
+  document.getElementById('agenda-group-sub').textContent =
+    `Serenatas programadas (${total})`;
+
+  if (total === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🎵</div>
+        <p>No hay serenatas para este rango de fechas</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="serenata-list">${sers.map(([id,s]) => buildCard(id, s, g, false)).join('')}</div>`;
+  attachCardEvents(container, false);
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER ADMIN
+═══════════════════════════════════════════════════ */
+function renderAdmin() {
+  const filterGroup = document.getElementById('admin-filter-group').value;
+  const filterDesde = document.getElementById('admin-filter-desde').value;
+  const filterHasta = document.getElementById('admin-filter-hasta').value;
+  let sers = [];
+
+  if (filterGroup === 'all' || filterGroup === 'A') {
+    sortedSerenatas(state.serenatasA).forEach(([id,s]) => sers.push({ id, s, group:'A' }));
+  }
+  if (filterGroup === 'all' || filterGroup === 'B') {
+    sortedSerenatas(state.serenatasB).forEach(([id,s]) => sers.push({ id, s, group:'B' }));
+  }
+
+  // Filtrar por rango de fechas
+  if (filterDesde || filterHasta) {
+    sers = sers.filter(item => {
+      if (filterDesde && item.s.fecha < filterDesde) return false;
+      if (filterHasta && item.s.fecha > filterHasta) return false;
+      return true;
+    });
+  }
+
+  // Filtrar por teléfono — si hay búsqueda, ignorar filtros de fecha y mostrar todo
+  const searchTel = document.getElementById('admin-search-tel').value.trim().replace(/\D/g,'');
+  if (searchTel) {
+    // Buscar en TODAS las serenatas sin importar fecha
+    let allSers = [];
+    const fgAll = filterGroup;
+    if (fgAll === 'all' || fgAll === 'A') sortedSerenatas(state.serenatasA).forEach(([id,s]) => allSers.push({id,s,group:'A'}));
+    if (fgAll === 'all' || fgAll === 'B') sortedSerenatas(state.serenatasB).forEach(([id,s]) => allSers.push({id,s,group:'B'}));
+    sers = allSers.filter(item => (item.s.contratanteTel || '').replace(/\D/g,'').includes(searchTel));
+  }
+
+  // Ordenar por fecha y luego por hora
+  sers.sort((a,b) => {
+    const ka = a.s.fecha + a.s.hora;
+    const kb = b.s.fecha + b.s.hora;
+    return ka < kb ? -1 : ka > kb ? 1 : 0;
+  });
+
+  const container = document.getElementById('admin-serenata-list');
+  const contador = document.getElementById('admin-contador');
+
+  // Mostrar contador
+  const total = sers.length;
+  const grupoLabel = filterGroup === 'A' ? '🎷 Grupo A' : filterGroup === 'B' ? '🎻 Grupo B' : 'Todos los grupos';
+  if (total === 0) {
+    contador.textContent = '';
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🎵</div>
+        <p>No hay serenatas programadas</p>
+      </div>`;
+    return;
+  }
+  const totalDinero = sers.reduce((acc, {s}) => acc + (s.precio ? Number(s.precio) : 0), 0);
+  const dineroStr = totalDinero > 0 ? ` · 💰 $${totalDinero.toLocaleString('es-CO')}` : '';
+  contador.textContent = `${grupoLabel} · ${total} serenata${total !== 1 ? 's' : ''} encontrada${total !== 1 ? 's' : ''}${dineroStr}`;
+
+  container.innerHTML = `<div class="admin-sc-wrap">${sers.map(({id,s,group}) => buildCard(id,s,group,true)).join('')}</div>`;
+  attachCardEvents(container, true);
+
+  // Config inputs
+  const cfgA = document.getElementById('cfg-code-a');
+  const cfgB = document.getElementById('cfg-code-b');
+  if (cfgA && !cfgA.value) cfgA.value = state.config.codeA || '';
+  if (cfgB && !cfgB.value) cfgB.value = state.config.codeB || '';
+}
+
+/* ═══════════════════════════════════════════════════
+   BUILD CARD HTML
+═══════════════════════════════════════════════════ */
+function buildCard(id, s, group, isAdmin) {
+  const badge = group === 'A'
+    ? '<span class="badge-group badge-a">🎷 Grupo A</span>'
+    : '<span class="badge-group badge-b">🎻 Grupo B</span>';
+
+  const videoEnviado = s.videoEnviado || false;
+  const videoBarra = '';
+
+  const adminActions = isAdmin ? `
+    <div class="sc-admin-actions">
+      <button class="btn-transfer" data-action="edit" data-id="${id}" data-group="${group}">✏️ Editar</button>
+      <button class="btn-transfer" data-action="transfer" data-id="${id}" data-group="${group}">🔀 Trasladar</button>
+      <button class="btn-danger" data-action="delete" data-id="${id}" data-group="${group}">🗑 Eliminar</button>
+    </div>` : '';
+
+  const cardBorderColor = isAdmin && videoEnviado ? 'border-left-color:#27ae60;' : '';
+  return `
+    <div class="serenata-card orn-border" style="${cardBorderColor}">
+      ${isAdmin ? `<div data-action="toggle-video" data-id="${id}" data-group="${group}" style="cursor:pointer;background:${videoEnviado ? 'rgba(39,174,96,.15)' : 'transparent'};border-bottom:1px solid ${videoEnviado ? '#27ae60' : 'rgba(201,168,76,.15)'};color:${videoEnviado ? '#27ae60' : 'var(--white-dim)'};font-family:var(--font-head);font-size:0.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;margin:-1px -1px 10px;transition:all .3s;">${videoEnviado ? '✅ Video enviado al cliente' : '☐ Marcar video enviado'}</div>` : ''}
+      ${badge}
+      <div class="sc-datetime">
+        <span>📅 ${formatDate(s.fecha)}</span>
+        <span>🕐 ${formatTime(s.hora)}</span>
+      </div>
+      <div class="sc-details">
+        <div class="detail-row"><span class="di">🎉</span><span>${esc(s.motivo)}</span></div>
+        <div class="detail-row"><span class="di">👤</span><span>Para: <strong>${esc(s.para)}</strong></span></div>
+        <div class="detail-row"><span class="di">💌</span><span>De parte de: ${esc(s.deParte)}</span></div>
+        ${s.comentario ? `<div class="detail-row"><span class="di">💬</span><span>${esc(s.comentario)}</span></div>` : ''}
+      </div>
+      <div style="height:1px;background:rgba(201,168,76,.15);margin:10px 0;"></div>
+      <div class="sc-details">
+        <div class="detail-row"><span class="di">📍</span><span>${esc(s.direccion)}</span></div>
+        <div class="detail-row"><span class="di">📞</span><span>${esc(s.contratanteNombre)} · ${esc(s.contratanteTel)}</span>
+          <a href="https://wa.me/57${s.contratanteTel.replace(/\D/g,'')}" target="_blank" class="btn-whatsapp" title="Abrir WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" style="display:block;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.885a.5.5 0 0 0 .606.61l6.188-1.437A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.893 9.893 0 0 1-5.034-1.376l-.36-.214-3.733.867.936-3.617-.235-.373A9.867 9.867 0 0 1 2.106 12C2.106 6.533 6.533 2.106 12 2.106S21.894 6.533 21.894 12 17.467 21.894 12 21.894z"/></svg>
+          </a>
+        </div>
+        ${s.precio ? `<div class="detail-row"><span class="di">💰</span><span>$ ${Number(s.precio).toLocaleString('es-CO')}</span></div>` : ''}
+      </div>
+      ${videoBarra || ''}
+      ${adminActions}
+    </div>`;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function attachCardEvents(container, isAdmin) {
+  if (!isAdmin) return;
+  container.querySelectorAll('[data-action]').forEach(btn => {
+    const { action, id, group } = btn.dataset;
+    if (action === 'edit')         btn.addEventListener('click', () => openEditSerenata(id, group));
+    if (action === 'transfer')     btn.addEventListener('click', () => openTransfer(id, group));
+    if (action === 'delete')       btn.addEventListener('click', () => openDelete(id, group));
+    if (action === 'toggle-video') btn.addEventListener('click', () => {
+      const current = (getSerenatas(group)[id] || {}).videoEnviado || false;
+      db.ref(`serenatas/${group}/${id}/videoEnviado`).set(!current)
+        .then(() => showToast(!current ? '✅ Video marcado como enviado' : '☐ Marcado como no enviado'));
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   HOME BUTTONS
+═══════════════════════════════════════════════════ */
+// Grupo A — entrada directa
+document.getElementById('btn-grupo-a').addEventListener('click', () => {
+  state.currentGroup = 'A';
+  const hoy = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('agenda-filter-desde').value = hoy;
+  document.getElementById('agenda-filter-hasta').value = hoy;
+  showScreen('agenda');
+  renderAgenda();
+});
+
+// Grupo B — entrada directa
+document.getElementById('btn-grupo-b').addEventListener('click', () => {
+  state.currentGroup = 'B';
+  const hoy = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('agenda-filter-desde').value = hoy;
+  document.getElementById('agenda-filter-hasta').value = hoy;
+  showScreen('agenda');
+  renderAgenda();
+});
+
+
+// Admin — entrada directa
+document.getElementById('btn-admin-home').addEventListener('click', () => {
+  state.isAdmin = true;
+  showScreen('admin');
+  const hoyAdmin = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('admin-filter-desde').value = hoyAdmin;
+  document.getElementById('admin-filter-hasta').value = hoyAdmin;
+  renderAdmin();
+  cargarLinksPermanentes();
+  renderBuzon();
+});
+
+
+
+/* ═══════════════════════════════════════════════════
+   ADMIN TABS
+═══════════════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('agenda-filter-desde').addEventListener('change', renderAgenda);
+document.getElementById('agenda-filter-hasta').addEventListener('change', renderAgenda);
+document.getElementById('btn-reset-agenda-filter').addEventListener('click', () => {
+  const hoy = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('agenda-filter-desde').value = hoy;
+  document.getElementById('agenda-filter-hasta').value = hoy;
+  renderAgenda();
+});
+document.getElementById('agenda-filter-desde').addEventListener('change', renderAgenda);
+document.getElementById('agenda-filter-hasta').addEventListener('change', renderAgenda);
+document.getElementById('btn-reset-agenda-filter').addEventListener('click', () => {
+  const hoy = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('agenda-filter-desde').value = hoy;
+  document.getElementById('agenda-filter-hasta').value = hoy;
+  renderAgenda();
+});
+// BUSCADOR POR TELÉFONO
+document.getElementById('admin-search-tel').addEventListener('input', function() {
+  const clearBtn = document.getElementById('btn-clear-search');
+  clearBtn.style.display = this.value ? 'block' : 'none';
+  renderAdmin();
+});
+document.getElementById('btn-clear-search').addEventListener('click', () => {
+  document.getElementById('admin-search-tel').value = '';
+  document.getElementById('btn-clear-search').style.display = 'none';
+  renderAdmin();
+});
+document.getElementById('admin-filter-group').addEventListener('change', renderAdmin);
+document.getElementById('admin-filter-desde').addEventListener('change', renderAdmin);
+document.getElementById('admin-filter-hasta').addEventListener('change', renderAdmin);
+document.getElementById('btn-reset-filter').addEventListener('click', () => {
+  const hoyReset = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('admin-filter-group').value = 'all';
+  document.getElementById('admin-filter-desde').value = hoyReset;
+  document.getElementById('admin-filter-hasta').value = hoyReset;
+  renderAdmin();
+});
+
+/* ═══════════════════════════════════════════════════
+   NUEVA SERENATA (desde Agenda)
+═══════════════════════════════════════════════════ */
+document.getElementById('btn-nueva-serenata').addEventListener('click', () => {
+  openNewSerenata(state.currentGroup, false);
+});
+
+function openNewSerenata(group, isAdmin) {
+  state.editingId    = null;
+  state.editingGroup = group;
+  document.getElementById('modal-serenata-title').textContent = 'Nueva Serenata';
+  document.getElementById('modal-serenata-sub').textContent =
+    group ? `${group === 'A' ? '🎷 Grupo A' : '🎻 Grupo B'}` : '';
+  clearAlert('alert-serenata');
+  clearAlert('alert-conflict');
+  document.getElementById('conflict-indicator').style.display = 'none';
+
+  // Reset fields
+  ['f-fecha','f-hora','f-direccion','f-motivo','f-para','f-de-parte','f-contratante-nombre','f-contratante-tel','f-comentario','f-precio']
+    .forEach(id => { document.getElementById(id).value = ''; });
+
+  const adminGroupField = document.getElementById('field-grupo-admin');
+  adminGroupField.style.display = isAdmin ? 'block' : 'none';
+  if (isAdmin) document.getElementById('f-grupo-admin').value = group || 'A';
+
+  // Bloquear fechas pasadas
+  const hoy = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  document.getElementById('f-fecha').min = hoy;
+  openOverlay('overlay-serenata');
+  setTimeout(() => document.getElementById('f-fecha').focus(), 100);
+}
+
+function openEditSerenata(id, group) {
+  const s = getSerenatas(group)[id];
+  if (!s) return;
+  state.editingId    = id;
+  state.editingGroup = group;
+
+  document.getElementById('modal-serenata-title').textContent = 'Editar Serenata';
+  document.getElementById('modal-serenata-sub').textContent =
+    group === 'A' ? '🎷 Grupo A' : '🎻 Grupo B';
+  clearAlert('alert-serenata');
+  clearAlert('alert-conflict');
+  document.getElementById('conflict-indicator').style.display = 'none';
+
+  document.getElementById('f-fecha').value             = s.fecha || '';
+  document.getElementById('f-hora').value              = s.hora || '';
+  document.getElementById('f-direccion').value         = s.direccion || '';
+  document.getElementById('f-motivo').value            = s.motivo || '';
+  document.getElementById('f-para').value              = s.para || '';
+  document.getElementById('f-de-parte').value          = s.deParte || '';
+  document.getElementById('f-contratante-nombre').value= s.contratanteNombre || '';
+  document.getElementById('f-contratante-tel').value   = s.contratanteTel || '';
+  document.getElementById('f-comentario').value         = s.comentario || '';
+  document.getElementById('f-precio').value             = s.precio || '';
+
+
+  const adminGroupField = document.getElementById('field-grupo-admin');
+  adminGroupField.style.display = 'block';
+  document.getElementById('f-grupo-admin').value = group;
+
+  openOverlay('overlay-serenata');
+}
+
+// Check conflict on date/time change
+['f-fecha','f-hora'].forEach(fid => {
+  document.getElementById(fid).addEventListener('change', checkSerenataConflict);
+});
+
+function checkSerenataConflict() {
+  const fecha = document.getElementById('f-fecha').value;
+  const hora  = document.getElementById('f-hora').value;
+  const group = state.isAdmin
+    ? document.getElementById('f-grupo-admin').value
+    : state.editingGroup || state.currentGroup;
+  if (!fecha || !hora || !group) return;
+  const occupied = isSlotOccupied(group, fecha, hora, state.editingId);
+  document.getElementById('conflict-indicator').style.display = occupied ? 'block' : 'none';
+}
+
+document.getElementById('close-serenata').addEventListener('click', () => closeOverlay('overlay-serenata'));
+
+document.getElementById('btn-guardar-serenata').addEventListener('click', guardarSerenata);
+
+async function guardarSerenata() {
+  const fecha  = document.getElementById('f-fecha').value.trim();
+  const hora   = document.getElementById('f-hora').value.trim();
+  const dir    = document.getElementById('f-direccion').value.trim();
+  const motivo = document.getElementById('f-motivo').value.trim();
+  const para   = document.getElementById('f-para').value.trim();
+  const parte  = document.getElementById('f-de-parte').value.trim();
+  const cNom   = document.getElementById('f-contratante-nombre').value.trim();
+  const cTel   = document.getElementById('f-contratante-tel').value.trim();
+  const coment = document.getElementById('f-comentario').value.trim();
+  const precio = document.getElementById('f-precio').value.trim();
+  const observ = '';
+
+  const groupField = document.getElementById('field-grupo-admin');
+  const group = (groupField.style.display !== 'none')
+    ? document.getElementById('f-grupo-admin').value
+    : (state.editingGroup || state.currentGroup);
+
+  // Validations
+  if (!fecha || !hora || !dir || !motivo || !para || !parte || !cNom || !cTel) {
+    showAlert('alert-serenata', '⚠️ Todos los campos son obligatorios.');
+    return;
+  }
+  const hoyStr = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  if (fecha < hoyStr) {
+    showAlert('alert-serenata', '⚠️ No se puede agendar en una fecha pasada.');
+    return;
+  }
+  if (!group) {
+    showAlert('alert-serenata', '⚠️ Grupo inválido.');
+    return;
+  }
+
+  // Conflict check
+  if (isSlotOccupied(group, fecha, hora, state.editingId)) {
+    showAlert('alert-serenata', `⚠️ El horario ${formatDate(fecha)} a las ${formatTime(hora)} ya está ocupado en ${group === 'A' ? 'Grupo A' : 'Grupo B'}.`);
+    return;
+  }
+
+  const data = { fecha, hora, direccion:dir, motivo, para, deParte:parte,
+                 contratanteNombre:cNom, contratanteTel:cTel, comentario:coment, precio:precio, observaciones:observ,
+                 grupo: group, createdAt: Date.now() };
+
+  const btn = document.getElementById('btn-guardar-serenata');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  try {
+    if (state.editingId) {
+      await db.ref(`serenatas/${group}/${state.editingId}`).update(data);
+      showToast('✅ Serenata actualizada');
+    } else {
+      await db.ref(`serenatas/${group}`).push(data);
+      showToast('✅ Serenata guardada');
+    }
+    closeOverlay('overlay-serenata');
+  } catch(e) {
+    showAlert('alert-serenata', '⚠️ Error al guardar: ' + (e.message || 'Verifica tu conexión.'));
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Guardar Serenata';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   ELIMINAR
+═══════════════════════════════════════════════════ */
+function openDelete(id, group) {
+  const s = getSerenatas(group)[id];
+  if (!s) return;
+  state.pendingDelete = { id, group };
+  document.getElementById('delete-confirm-text').textContent =
+    `Para: ${s.para} · ${formatDate(s.fecha)} ${formatTime(s.hora)}`;
+  openOverlay('overlay-confirm-delete');
+}
+
+document.getElementById('btn-cancel-delete').addEventListener('click', () => {
+  state.pendingDelete = null;
+  closeOverlay('overlay-confirm-delete');
+});
+
+document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+  if (!state.pendingDelete) return;
+  const { id, group } = state.pendingDelete;
+  try {
+    await db.ref(`serenatas/${group}/${id}`).remove();
+    showToast('🗑 Serenata eliminada');
+  } catch(e) { showToast('⚠️ Error al eliminar.'); }
+  state.pendingDelete = null;
+  closeOverlay('overlay-confirm-delete');
+});
+
+/* ═══════════════════════════════════════════════════
+   TRANSFER / CROSS-SWAP
+═══════════════════════════════════════════════════ */
+function openTransfer(id, group) {
+  const toGroup = group === 'A' ? 'B' : 'A';
+  state.pendingTransfer = { id, fromGroup: group, toGroup, swapId: null };
+  const s = getSerenatas(group)[id];
+
+  document.getElementById('modal-transfer-title').textContent = `Trasladar a Grupo ${toGroup}`;
+  document.getElementById('modal-transfer-sub').textContent =
+    `"${s.para}" (${formatDate(s.fecha)} ${formatTime(s.hora)}) → ${toGroup === 'A' ? '🎷 Grupo A' : '🎻 Grupo B'}`;
+
+  clearAlert('alert-transfer');
+  const conflictAlert = document.getElementById('alert-transfer-conflict');
+  conflictAlert.style.display = 'none';
+  conflictAlert.className = 'alert warning';
+  conflictAlert.textContent = '';
+  document.getElementById('transfer-conflict-actions').style.display = 'none';
+  document.getElementById('t-new-fecha').value = s.fecha;
+  document.getElementById('t-new-hora').value  = s.hora;
+
+  // Check if destination slot is free
+  if (isSlotOccupied(toGroup, s.fecha, s.hora)) {
+    // Find what's in destination at that slot to offer swap
+    const destSers = sortedSerenatas(getSerenatas(toGroup));
+    const conflict = destSers.find(([,ds]) => ds.fecha === s.fecha && ds.hora === s.hora);
+    if (conflict) {
+      const [cId, cs] = conflict;
+      state.pendingTransfer.swapId = cId;
+      conflictAlert.style.display = 'block';
+      conflictAlert.className = 'alert warning show';
+      conflictAlert.innerHTML = `⚠️ No se puede trasladar la serenata porque el Grupo ${toGroup === 'A' ? '🎷 A' : '🎻 B'} ya tiene una serenata agendada para el/la homenajeado/a <strong>"${esc(cs.para)}"</strong> a esa hora. ¡Solo puedes cruzarla o cambiar el horario!`;
+      document.getElementById('transfer-conflict-actions').style.display = 'block';
+      document.getElementById('btn-confirm-transfer').textContent = 'Cruzar / Trasladar';
+    }
+  }
+
+  openOverlay('overlay-transfer');
+}
+
+document.getElementById('close-transfer').addEventListener('click', () => {
+  state.pendingTransfer = null;
+  closeOverlay('overlay-transfer');
+});
+document.getElementById('btn-cancel-transfer').addEventListener('click', () => {
+  state.pendingTransfer = null;
+  closeOverlay('overlay-transfer');
+});
+
+document.getElementById('btn-confirm-transfer').addEventListener('click', async () => {
+  if (!state.pendingTransfer) return;
+  const { id, fromGroup, toGroup, swapId } = state.pendingTransfer;
+  const s = getSerenatas(fromGroup)[id];
+
+  const conflictShown = document.getElementById('transfer-conflict-actions').style.display !== 'none';
+
+  let targetFecha = s.fecha;
+  let targetHora  = s.hora;
+
+  if (conflictShown) {
+    // User can override with new time or we'll do swap
+    const nf = document.getElementById('t-new-fecha').value;
+    const nh = document.getElementById('t-new-hora').value;
+    const changedTime = (nf !== s.fecha || nh !== s.hora);
+
+    if (changedTime) {
+      // Just transfer with new time — check that new slot is free
+      if (isSlotOccupied(toGroup, nf, nh)) {
+        showAlert('alert-transfer', `⚠️ El nuevo horario también está ocupado en Grupo ${toGroup}.`);
+        return;
+      }
+      targetFecha = nf;
+      targetHora  = nh;
+    } else if (swapId) {
+      // Cross-swap: move s → toGroup, move destSer → fromGroup
+      await doSwap(id, fromGroup, swapId, toGroup, s);
+      return;
+    }
+  }
+
+  // Bloquear traslado a fecha pasada
+  const hoyT = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  if (targetFecha < hoyT) {
+    showAlert('alert-transfer', '⚠️ No se puede trasladar a una fecha pasada.');
+    return;
+  }
+
+  // Simple transfer — Firebase
+  try {
+    const newData = { ...s, grupo: toGroup, fecha: targetFecha, hora: targetHora };
+    await db.ref(`serenatas/${toGroup}`).push(newData);
+    await db.ref(`serenatas/${fromGroup}/${id}`).remove();
+    showToast(`✅ Trasladada a Grupo ${toGroup}`);
+    closeOverlay('overlay-transfer');
+    state.pendingTransfer = null;
+  } catch(e) {
+    showAlert('alert-transfer', '⚠️ Error al trasladar.');
+    console.error(e);
+  }
+});
+
+async function doSwap(idA, groupA, idB, groupB, sA) {
+  const sB = getSerenatas(groupB)[idB];
+  if (!sB) return;
+  try {
+    await db.ref(`serenatas/${groupB}`).push({ ...sA, grupo: groupB });
+    await db.ref(`serenatas/${groupA}`).push({ ...sB, grupo: groupA });
+    await db.ref(`serenatas/${groupA}/${idA}`).remove();
+    await db.ref(`serenatas/${groupB}/${idB}`).remove();
+    showToast('🔀 Serenatas cruzadas exitosamente');
+    closeOverlay('overlay-transfer');
+    state.pendingTransfer = null;
+  } catch(e) {
+    showAlert('alert-transfer', '⚠️ Error al cruzar serenatas.');
+    console.error(e);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   CONFIG: SAVE CODES & ADMIN CREDS
+═══════════════════════════════════════════════════ */
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════════
+   OVERLAYS: CLOSE ON BACKDROP CLICK
+═══════════════════════════════════════════════════ */
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', e => {
+    if (e.target === ov) ov.classList.remove('open');
+  });
+});
+
+/* ═══════════════════════════════════════════════════
+   PWA — SERVICE WORKER (inline via blob)
+═══════════════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'mariachi-v1';
+    const ASSETS = ['/'];
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys =>
+        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      ));
+      self.clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      if (e.request.method !== 'GET') return;
+      e.respondWith(
+        fetch(e.request).catch(() => caches.match(e.request))
+      );
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(console.warn);
+}
+
+/* ═══════════════════════════════════════════════════
+   BOOTSTRAP
+═══════════════════════════════════════════════════ */
+// Mostrar home inmediatamente si no hay token
+document.addEventListener('DOMContentLoaded', function() {
+  const _urlParams = new URLSearchParams(window.location.search);
+  const _hasToken = _urlParams.get('token');
+  const _hasGrupo = _urlParams.get('grupo') && _urlParams.get('key');
+  // Solo mostrar home si no hay parámetros de cliente
+  if (!_hasToken && !_hasGrupo) {
+    showScreen('home');
+  }
+  initFirebaseListeners();
+
+  // MODO CLARO / OSCURO
+  const toggleBtn = document.getElementById('btn-toggle-mode');
+  if (toggleBtn) {
+    const savedMode = localStorage.getItem('mariachi-mode') || 'dark';
+    if (savedMode === 'light') {
+      document.body.classList.add('light-mode');
+      toggleBtn.textContent = '🌙 Oscuro';
+    }
+    toggleBtn.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light-mode');
+      toggleBtn.textContent = isLight ? '🌙 Oscuro' : '☀ Claro';
+      localStorage.setItem('mariachi-mode', isLight ? 'light' : 'dark');
+    });
+  }
+});
+
+
+// ══════════════════════════════════════════════════
+// SISTEMA DE LINKS PARA CLIENTES
+// ══════════════════════════════════════════════════
+
+// Al cargar, revisar si hay un token en la URL
+// checkClientToken se llama desde initFirebaseListeners
+
+// Verificar disponibilidad en formulario cliente
+['c-fecha','c-hora'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => {
+    const fecha = document.getElementById('c-fecha').value;
+    const hora  = document.getElementById('c-hora').value;
+    if (!fecha || !hora || !state.clientGroup) return;
+    const occupied = isSlotOccupied(state.clientGroup, fecha, hora);
+    document.getElementById('c-conflict-indicator').style.display = occupied ? 'block' : 'none';
+  });
+});
+
+// Guardar serenata del cliente
+document.getElementById('btn-guardar-cliente').addEventListener('click', async () => {
+  const fecha  = document.getElementById('c-fecha').value;
+  const hora   = document.getElementById('c-hora').value;
+  const para   = document.getElementById('c-para').value.trim();
+  const parte  = document.getElementById('c-de-parte').value.trim();
+  const dir    = document.getElementById('c-direccion').value.trim();
+  const motivo = document.getElementById('c-motivo').value.trim();
+  const cNom   = document.getElementById('c-contratante-nombre').value.trim();
+  const cTel   = document.getElementById('c-contratante-tel').value.trim();
+  const alert  = document.getElementById('alert-cliente');
+
+  if (!fecha || !hora || !para || !parte || !dir || !motivo || !cNom || !cTel) {
+    alert.textContent = '⚠️ Todos los campos son obligatorios.';
+    alert.style.display = 'block';
+    return;
+  }
+  const hoyC = (d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)(new Date());
+  if (fecha < hoyC) {
+    alert.textContent = '⚠️ No puedes agendar en una fecha pasada.';
+    alert.style.display = 'block';
+    return;
+  }
+  if (isSlotOccupied(state.clientGroup, fecha, hora)) {
+    alert.textContent = '⚠️ Este horario ya está reservado. Por favor elige otra hora.';
+    alert.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('btn-guardar-cliente');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  const data = { fecha, hora, para, deParte: parte, direccion: dir, motivo,
+                 contratanteNombre: cNom, contratanteTel: cTel,
+                 grupo: state.clientGroup, agendadoPorCliente: true };
+  try {
+    // 1. Guardar serenata
+    await db.ref(`serenatas/${state.clientGroup}`).push(data);
+
+    // 2. Marcar token como usado (si aplica)
+    if (state.clientToken) {
+      await db.ref(`tokens/${state.clientToken}`).update({ used: true });
+    }
+
+    // 3. Guardar notificación en buzón (independiente — no falla el flujo)
+    db.ref('buzon').push({
+      nombre: cNom,
+      tel: cTel,
+      fechaSerenata: fecha,
+      horaSerenata: hora,
+      grupo: state.clientGroup,
+      timestamp: Date.now(),
+      leido: false
+    }).catch(e => console.error('Error buzón:', e));
+
+    // 4. Mostrar confirmación
+    document.getElementById('confirmacion-detalle').innerHTML = `
+      <b>📅</b> ${formatDate(fecha)} · ${formatTime(hora)}<br>
+      <b>👤</b> Para: ${esc(para)}<br>
+      <b>💌</b> De parte de: ${esc(parte)}<br>
+      <b>📍</b> ${esc(dir)}<br>
+      <b>🎉</b> ${esc(motivo)}<br>
+      <b>📞</b> ${esc(cNom)} · ${esc(cTel)}
+    `;
+    showScreen('confirmacion');
+  } catch(e) {
+    console.error('Error al guardar serenata:', e);
+    alert.textContent = '⚠️ Error al guardar. Intenta de nuevo.';
+    alert.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '✅ Confirmar Serenata';
+  }
+});
+
+// Generar link para cliente
+document.getElementById('btn-generar-link').addEventListener('click', async () => {
+  const grupo = document.getElementById('link-grupo').value;
+  const token = Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
+  const btn = document.getElementById('btn-generar-link');
+  btn.disabled = true;
+  btn.textContent = 'Generando...';
+  try {
+    await db.ref(`tokens/${token}`).set({ grupo, usado: false, used: false, creado: Date.now() });
+    const baseUrl = window.location.href.split('?')[0];
+    const link = `${baseUrl}?token=${token}`;
+
+    // Acortar con is.gd
+    let linkFinal = link;
+    try {
+      const resp = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(link)}`);
+      if (resp.ok) {
+        const short = await resp.text();
+        if (short.startsWith('https://')) linkFinal = short.trim();
+      }
+    } catch(e) {
+      console.warn('is.gd no disponible, usando link original');
+    }
+
+    document.getElementById('link-url').textContent = linkFinal;
+    document.getElementById('link-result').style.display = 'block';
+    renderLinksActivos();
+  } catch(e) {
+    showToast('⚠️ Error al generar link.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔗 Generar Link';
+  }
+});
+
+// Copiar link
+document.getElementById('btn-copiar-link').addEventListener('click', () => {
+  const url = document.getElementById('link-url').textContent;
+  navigator.clipboard.writeText(url).then(() => showToast('✅ Link copiado'));
+});
+
+// Renderizar links activos
+function renderLinksActivos() {
+  db.ref('tokens').orderByChild('used').equalTo(false).once('value').then(snap => {
+    const val = snap.val();
+    const container = document.getElementById('links-activos-list');
+    if (!val) {
+      container.innerHTML = '<p style="font-size:.8rem;color:var(--white-dim);text-align:center;padding:20px 0;">No hay links activos</p>';
+      return;
+    }
+    const baseUrl = window.location.href.split('?')[0];
+    container.innerHTML = Object.entries(val).map(([tok, d]) => `
+      <div style="background:var(--black-panel);border:1px solid var(--gold-dark);border-radius:var(--radius);padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div>
+          <span style="font-family:var(--font-head);font-size:.65rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;">${d.grupo === 'A' ? '🎷 Grupo A' : '🎻 Grupo B'}</span>
+          <p style="font-size:.72rem;color:var(--white-dim);margin-top:4px;word-break:break-all;">...${tok.slice(-8)}</p>
+        </div>
+        <button onclick="navigator.clipboard.writeText('${baseUrl}?token=${tok}').then(()=>showToast('✅ Copiado'))" style="background:none;border:1px solid var(--gold-dark);color:var(--gold);padding:6px 10px;border-radius:var(--radius);font-family:var(--font-head);font-size:.65rem;letter-spacing:.08em;cursor:pointer;white-space:nowrap;">📋 Copiar</button>
+        <button onclick="db.ref('tokens/${tok}').remove().then(()=>{showToast('🗑 Link eliminado');renderLinksActivos();})" style="background:none;border:1px solid var(--red-alert);color:var(--red-alert);padding:6px 10px;border-radius:var(--radius);font-family:var(--font-head);font-size:.65rem;letter-spacing:.08em;cursor:pointer;white-space:nowrap;">🗑 Eliminar</button>
+      </div>`).join('');
+  });
+}
+
+// Cargar links activos al entrar al tab
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'tab-links') {
+    btn.addEventListener('click', renderLinksActivos);
+  }
+});
+
+
+// ══════════════════════════════════════════════════
+// BUZÓN DE NOTIFICACIONES
+// ══════════════════════════════════════════════════
+
+function formatTimestamp(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  const hora = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return `${fecha} a las ${hora}`;
+}
+
+function renderBuzon() {
+  const container = document.getElementById('buzon-list');
+  if (!container) return;
+  container.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+  db.ref('buzon').orderByChild('timestamp').once('value').then(snap => {
+    const val = snap.val();
+    if (!val) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No hay notificaciones</p></div>`;
+      // Actualizar badge
+      document.getElementById('tab-btn-buzon').textContent = '📬 Buzón';
+      return;
+    }
+
+    let mensajes = Object.entries(val).sort((a,b) => b[1].timestamp - a[1].timestamp);
+
+    // Filtrar por rango si hay fechas
+    const desde = document.getElementById('buzon-desde').value;
+    const hasta = document.getElementById('buzon-hasta').value;
+    if (desde || hasta) {
+      mensajes = mensajes.filter(([,m]) => {
+        const fechaMsg = new Date(m.timestamp).toISOString().split('T')[0];
+        if (desde && fechaMsg < desde) return false;
+        if (hasta && fechaMsg > hasta) return false;
+        return true;
+      });
+    }
+
+    // Contar no leídos
+    const noLeidos = mensajes.filter(([,m]) => !m.leido).length;
+    const tabBtn = document.getElementById('tab-btn-buzon');
+    tabBtn.textContent = noLeidos > 0 ? `📬 Buzón (${noLeidos})` : '📬 Buzón';
+
+    if (mensajes.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No hay notificaciones en este rango</p></div>`;
+      return;
+    }
+
+    container.innerHTML = mensajes.map(([id, m]) => {
+      const leido = m.leido ? '' : 'border-left:4px solid var(--gold);';
+      const bg = m.leido ? 'background:var(--black-panel);' : 'background:var(--black-card);';
+      const badgeGrupo = m.grupo === 'A' ? '<span class="badge-group badge-a">🎷 Grupo A</span>' : '<span class="badge-group badge-b">🎻 Grupo B</span>';
+      const waLink = `https://wa.me/57${(m.tel||'').replace(/\D/g,'')}`;
+      return `
+      <div id="msg-${id}" style="${bg}${leido}border-radius:var(--radius);padding:16px;margin-bottom:10px;border:1px solid var(--gold-dark);cursor:pointer;transition:all .2s;" onclick="marcarLeido('${id}')">
+        ${!m.leido ? '<div style="display:flex;justify-content:flex-end;margin-bottom:6px;"><span style="background:#c9a84c;color:#000000;font-family:var(--font-head);font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.08em;border:2px solid #9a7a2e;">NUEVO</span></div>' : ''}
+        ${badgeGrupo}
+        <p style="font-size:0.92rem;font-weight:700;color:var(--white);line-height:1.7;margin:10px 0 8px;">
+          El contratante <strong>${esc(m.nombre)}</strong> · 
+          <a href="${waLink}" target="_blank" class="btn-whatsapp" onclick="event.stopPropagation()" style="display:inline-flex;vertical-align:middle;">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.885a.5.5 0 0 0 .606.61l6.188-1.437A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.893 9.893 0 0 1-5.034-1.376l-.36-.214-3.733.867.936-3.617-.235-.373A9.867 9.867 0 0 1 2.106 12C2.106 6.533 6.533 2.106 12 2.106S21.894 6.533 21.894 12 17.467 21.894 12 21.894z"/></svg>
+          </a>
+          ${esc(m.tel)} agendó una serenata para el día <strong>${formatDate(m.fechaSerenata)}</strong> a las <strong>${formatTime(m.horaSerenata)}</strong> en el ${m.grupo === 'A' ? '🎷 Grupo A' : '🎻 Grupo B'}.
+        </p>
+        <p style="font-size:0.78rem;color:var(--white-dim);font-weight:700;">🕓 Recibido: ${formatTimestamp(m.timestamp)}</p>
+        <button onclick="irAAgenda('${id}','${m.grupo}','${m.fechaSerenata}');event.stopPropagation();" style="margin-top:10px;background:#c9a84c;color:#000000;padding:8px 16px;border-radius:var(--radius);font-family:var(--font-head);font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-weight:700;border:2px solid #9a7a2e;width:100%;">📋 Ir a la Agenda</button>
+      </div>`;
+    }).join('');
+  });
+}
+
+function marcarLeido(id) {
+  db.ref(`buzon/${id}`).update({ leido: true }).then(() => renderBuzon());
+}
+
+document.getElementById('btn-marcar-todos-leidos').addEventListener('click', () => {
+  db.ref('buzon').once('value').then(snap => {
+    const val = snap.val();
+    if (!val) return;
+    const updates = {};
+    Object.keys(val).forEach(id => { updates[`${id}/leido`] = true; });
+    db.ref('buzon').update(updates).then(() => { showToast('✓ Todos marcados como leídos'); renderBuzon(); });
+  });
+});
+
+document.getElementById('btn-vaciar-buzon').addEventListener('click', () => {
+  const desde = document.getElementById('buzon-desde').value;
+  const hasta = document.getElementById('buzon-hasta').value;
+  if (!desde && !hasta) { showToast('⚠️ Selecciona un rango de fechas'); return; }
+  if (!confirm(`¿Eliminar notificaciones ${desde ? 'desde '+desde : ''} ${hasta ? 'hasta '+hasta : ''}?`)) return;
+  db.ref('buzon').once('value').then(snap => {
+    const val = snap.val();
+    if (!val) return;
+    const dels = [];
+    Object.entries(val).forEach(([id, m]) => {
+      const fechaMsg = new Date(m.timestamp).toISOString().split('T')[0];
+      if (desde && fechaMsg < desde) return;
+      if (hasta && fechaMsg > hasta) return;
+      dels.push(db.ref(`buzon/${id}`).remove());
+    });
+    Promise.all(dels).then(() => { showToast('🗑 Buzón vaciado'); renderBuzon(); });
+  });
+});
+
+document.getElementById('buzon-desde').addEventListener('change', renderBuzon);
+document.getElementById('buzon-hasta').addEventListener('change', renderBuzon);
+
+// Cargar buzón al entrar al tab
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'tab-buzon') {
+    btn.addEventListener('click', renderBuzon);
+  }
+});
+
+// Listener en tiempo real para badge de no leídos y auto-render buzón
+db.ref('buzon').on('value', snap => {
+  const val = snap.val();
+  const tabBtn = document.getElementById('tab-btn-buzon');
+  if (!tabBtn) return;
+  if (!val) { tabBtn.textContent = '📬 Buzón'; }
+  else {
+    const noLeidos = Object.values(val).filter(m => !m.leido).length;
+    tabBtn.textContent = noLeidos > 0 ? `📬 Buzón (${noLeidos})` : '📬 Buzón';
+  }
+  // Si el tab buzón está activo, re-renderizar
+  const tabBuzon = document.getElementById('tab-buzon');
+  if (tabBuzon && tabBuzon.classList.contains('active')) {
+    renderBuzon();
+  }
+});
+
+
+// ══════════════════════════════════════════════════
+// LINKS PERMANENTES POR GRUPO
+// ══════════════════════════════════════════════════
+function getBaseUrl() {
+  return window.location.href.split('?')[0];
+}
+
+function cargarLinksPermanentes() {
+  const elA = document.getElementById('link-perm-a');
+  const elB = document.getElementById('link-perm-b');
+  if (!elA || !elB) return;
+
+  // Usar .on para escuchar cambios en tiempo real
+  db.ref('linksPermanentes').on('value', snap => {
+    const data = snap.val() || {};
+
+    if (data.shortA) {
+      elA.textContent = data.shortA;
+      state._linkPermA = data.shortA;
+    } else if (data.keyA) {
+      const url = `${getBaseUrl()}?grupo=A&key=${data.keyA}`;
+      elA.textContent = url;
+      state._linkPermA = url;
+    } else {
+      elA.textContent = 'Pulsa 🔄 Renovar Links para generar';
+      state._linkPermA = null;
+    }
+
+    if (data.shortB) {
+      elB.textContent = data.shortB;
+      state._linkPermB = data.shortB;
+    } else if (data.keyB) {
+      const url = `${getBaseUrl()}?grupo=B&key=${data.keyB}`;
+      elB.textContent = url;
+      state._linkPermB = url;
+    } else {
+      elB.textContent = 'Pulsa 🔄 Renovar Links para generar';
+      state._linkPermB = null;
+    }
+  }, e => {
+    elA.textContent = '⚠️ Error al cargar';
+    elB.textContent = '⚠️ Error al cargar';
+    console.error('Error links:', e);
+  });
+}
+
+function copiarLinkPerm(grupo) {
+  const link = grupo === 'A' ? state._linkPermA : state._linkPermB;
+  if (!link) { showToast('⚠️ Primero genera los links'); return; }
+  navigator.clipboard.writeText(link).then(() => showToast(`✅ Link Grupo ${grupo} copiado`));
+}
+
+async function renovarLinks() {
+  const btn = document.getElementById('btn-renovar-links');
+  if (btn) { btn.disabled = true; btn.textContent = 'Generando...'; }
+  try {
+    const keyA = Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,6);
+    const keyB = Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,6);
+    const base = getBaseUrl();
+    const urlA = `${base}?grupo=A&key=${keyA}`;
+    const urlB = `${base}?grupo=B&key=${keyB}`;
+
+    // Acortar con is.gd
+    async function acortar(url) {
+      try {
+        const r = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(url)}`);
+        const short = await r.text();
+        return short.startsWith('https://') ? short.trim() : url;
+      } catch { return url; }
+    }
+    const shortA = await acortar(urlA);
+    const shortB = await acortar(urlB);
+
+    // Guardar todo en Firebase — keys Y links acortados
+    await db.ref('linksPermanentes').set({ keyA, keyB, shortA, shortB });
+    showToast('✅ Links generados exitosamente');
+    cargarLinksPermanentes();
+  } catch(e) {
+    showToast('⚠️ Error: ' + e.message);
+    console.error(e);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Renovar Links (los anteriores quedarán inutilizables)'; }
+  }
+}
+
+// Cargar links al entrar al tab
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'tab-links') {
+    btn.addEventListener('click', cargarLinksPermanentes);
+  }
+});
+
+// ══════════════════════════════════════════════════
+// IR A LA AGENDA DESDE BUZÓN
+// ══════════════════════════════════════════════════
+function irAAgenda(msgId, grupo, fecha) {
+  // Marcar como leído
+  db.ref(`buzon/${msgId}`).update({ leido: true });
+  // Cambiar a tab Todas
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="tab-todas"]').classList.add('active');
+  document.getElementById('tab-todas').classList.add('active');
+  // Filtrar por grupo y fecha
+  document.getElementById('admin-filter-group').value = grupo;
+  document.getElementById('admin-filter-desde').value = fecha;
+  document.getElementById('admin-filter-hasta').value = fecha;
+  renderAdmin();
+  showToast(`📋 Mostrando serenatas del Grupo ${grupo} · ${formatDate(fecha)}`);
+}
+
+// MODO CLARO / OSCURO — integrado en DOMContentLoaded principal
+</script>
+
+<!-- PWA MANIFEST -->
+
+</body>
+</html>
